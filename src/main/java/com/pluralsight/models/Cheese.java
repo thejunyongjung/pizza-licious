@@ -3,7 +3,7 @@ package com.pluralsight.models;
 public enum Cheese {
     MOZZARELLA("Mozzarella"),
     PARMESAN("Parmesan"),
-    RICCTTA("Ricotta"),
+    RICOTTA("Ricotta"),
     GOAT("Goat"),
     BUFFALO("Buffalo");
 
