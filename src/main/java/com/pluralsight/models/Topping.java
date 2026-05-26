@@ -9,11 +9,13 @@ public abstract class Topping {
     protected Topping(boolean extra) { this.extra = extra; }
 
     // Naming rule: boolean methods is with 'is'
+    // Getter
     public boolean isExtra() { return extra; }
 
+    // Setter
     public void setExtra(boolean extra) { this.extra = extra; }
 
-    // SUBCLASS SPECIFIC BEHAVIORS
+    // SUBCLASS SPECIFIC BEHAVIORS —> Must be overwritten
     public abstract BigDecimal getPrice(Size size);
     public abstract String getName();
 }
