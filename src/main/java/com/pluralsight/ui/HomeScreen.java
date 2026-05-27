@@ -1,5 +1,7 @@
 package com.pluralsight.ui;
 
+import com.pluralsight.models.Order;
+
 import java.util.Scanner;
 
 /**
@@ -41,7 +43,8 @@ public class HomeScreen {
     }
 
     private void startNewOrder() {
-        // TODO P12: launch OrderScreen with a new Order
-        System.out.println("\n[...Starting a new order — Order Screen coming soon]");
+        Order order = new Order();
+        OrderScreen orderScreen = new OrderScreen(scanner);
+        orderScreen.display(order);
     }
 }
