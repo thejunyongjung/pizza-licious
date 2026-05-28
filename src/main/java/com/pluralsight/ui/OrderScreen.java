@@ -104,12 +104,11 @@ public class OrderScreen {
 
     /** Returns true if checkout succeeded so the order loop should exit. */
     private boolean checkout(Order order) {
-        // TODO P16: launch CheckoutScreen for confirm + ReceiptWriter
         if (!order.isValid()) {
             System.out.println("\nCannot check out an empty order. Add an item first.");
             return false;
         }
-        System.out.println("\n[...Checkout screen coming in P16]");
-        return true;
+        CheckoutScreen checkoutScreen = new CheckoutScreen(scanner);
+        return checkoutScreen.display(order);
     }
 }
