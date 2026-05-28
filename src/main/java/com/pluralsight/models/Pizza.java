@@ -37,6 +37,11 @@ public class Pizza implements OrderItem {
     public void addTopping(Topping topping) { this.toppings.add(topping); }
     public void removeTopping(Topping topping) { this.toppings.remove(topping); }
 
+    /** Type label for the receipt header. Subclasses override. */
+    protected String getPizzaType() {
+        return "PIZZA";
+    }
+
     // OrderItem implementation
     /** Adds up the size base price and every topping. */
     @Override
@@ -53,7 +58,7 @@ public class Pizza implements OrderItem {
     public String[] getDescription() {
         List<String> lines = new ArrayList<>();
 
-        String header = "PIZZA: " + size.getDisplayName() + " "
+        String header = getPizzaType() + ": " + size.getDisplayName() + " "
                 + crust.getDisplayName() + " Crust";
         if (stuffedCrust) header += " (Stuffed)";
         lines.add(header);

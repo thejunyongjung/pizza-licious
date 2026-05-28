@@ -14,6 +14,9 @@ import com.pluralsight.models.RegularToppingType;
 import com.pluralsight.models.Cheese;
 import com.pluralsight.models.CheeseTopping;
 
+import com.pluralsight.models.Margherita;
+import com.pluralsight.models.Veggie;
+
 import java.util.Scanner;
 
 /** Making a pizza, step by step. */
@@ -26,25 +29,43 @@ public class AddPizzaScreen {
     public Pizza getPizza() {
         System.out.println("\n===== Add Pizza =====");
 
-        // STEP 1: Crust
+        // STEP 0: Variant (Build your own, Margherita, Veggie)
+        int variant = promptPizzaType();
+        if (variant == -1) return null;
+
+        // Signature pizzas — everything preset, just confirm and return
+        if (variant == 1) {
+            Pizza pizza = new Margherita();
+            System.out.println("\nPizza added:");
+            for (String line : pizza.getDescription()) {
+                System.out.println(line);
+            }
+            return pizza;
+        }
+        if (variant == 2) {
+            Pizza pizza = new Veggie();
+            System.out.println("\nPizza added:");
+            for (String line : pizza.getDescription()) {
+                System.out.println(line);
+            }
+            return pizza;
+        }
+
+        // Build your own — full 8-step flow
         CrustType crust = promptCrust();
         if (crust == null) return null;
 
-        // STEP 2: Size
         Size size = promptSize();
         if (size == null) return null;
 
-        // Build pizza first, stuffed crust goes last
         Pizza pizza = new Pizza(size, crust, false);
 
-        // STEP 3-7: Toppings
         addMeats(pizza);
         addCheeses(pizza);
         addRegularToppings(pizza);
         addSauces(pizza);
         addSides(pizza);
 
-        // STEP 8: Stuffed crust
         pizza.setStuffedCrust(promptYesNo("\nStuffed crust? (y/n): "));
 
         System.out.println("\nPizza added:");
@@ -53,7 +74,6 @@ public class AddPizzaScreen {
         }
         return pizza;
     }
-
     // ===== Crust & Size =====
     private CrustType promptCrust() {
         CrustType[] crusts = CrustType.values();
@@ -160,6 +180,17 @@ public class AddPizzaScreen {
                 System.out.println("Please enter a number.");
             }
         }
+    }
+
+    // ===== Variant =====
+    /** Asks which pizza type: 0 = Build your own, 1 = Margherita, 2 = Veggie. */
+    private int promptPizzaType() {
+        String[] options = {
+                "Build your own",
+                "Margherita (12\" Regular — Mozzarella, Tomatoes, Basil, Marinara, Olive Oil)",
+                "Veggie (8\" Regular — Mozzarella, Bell Peppers, Spinach, Olives, Onions, Marinara)"
+        };
+        return promptChoice("Pizza variant:", options, "Cancel");
     }
 
     /** Yes/no prompt. Accepts y, yes, n, no (case-insensitive). */
