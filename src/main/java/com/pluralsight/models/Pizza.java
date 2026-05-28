@@ -9,6 +9,8 @@ import java.util.List;
  * Implements OrderItem so it can sit in the same list as Drink and GarlicKnots.
  */
 public class Pizza implements OrderItem {
+    private static final int LINE_LENGTH = 60;   // matches ReceiptWriter's line width
+
     private Size size;
     private CrustType crust;
     private boolean stuffedCrust;
@@ -69,25 +71,46 @@ public class Pizza implements OrderItem {
         return total;
     }
 
-    /** Receipt lines: header on top, toppings below. */
+    /** Receipt lines: total on top, breakdown below (amounts in parens). */
     @Override
     public String[] getDescription() {
         List<String> lines = new ArrayList<>();
 
+        // Header (charged total added by ReceiptWriter)
         String header = getPizzaType() + ": " + size.getDisplayName() + " "
                 + crust.getDisplayName() + " Crust";
         if (stuffedCrust) header += " (Stuffed)";
         lines.add(header);
 
+        // Base price
+        lines.add(rightAlign("  Base price",
+                "($" + String.format("%.2f", size.getBasePrice()) + ")"));
+
+        // Toppings
         if (!toppings.isEmpty()) {
             lines.add("  Toppings:");
             for (Topping t : toppings) {
                 String prefix = t.isExtra() ? "Extra " : "";
-                lines.add("    - " + prefix + t.getName());
+                String name = "    - " + prefix + t.getName();
+
+                BigDecimal price = t.getPrice(size);
+                if (price.compareTo(BigDecimal.ZERO) > 0) {
+                    lines.add(rightAlign(name,
+                            "($" + String.format("%.2f", price) + ")"));
+                } else {
+                    lines.add(name);   // Free topping —> name only
+                }
             }
         }
 
         return lines.toArray(new String[0]);
+    }
+
+    /** Pads label with spaces so the price sits at LINE_LENGTH (right-aligned). */
+    private String rightAlign(String label, String price) {
+        int spaces = LINE_LENGTH - label.length() - price.length();
+        if (spaces < 1) spaces = 1;
+        return label + " ".repeat(spaces) + price;
     }
 
     /** Prints the receipt format when Java needs a string. */
