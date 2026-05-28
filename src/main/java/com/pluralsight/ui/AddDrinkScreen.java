@@ -25,7 +25,10 @@ public class AddDrinkScreen {
         if (flavor == null) return null;
 
         Drink drink = new Drink(size, flavor);
-        System.out.println("\nDrink added: " + drink.getDescription());
+        System.out.println("\nDrink added:");
+        for (String line : drink.getDescription()) {
+            System.out.println(line);
+        }
         return drink;
     }
 

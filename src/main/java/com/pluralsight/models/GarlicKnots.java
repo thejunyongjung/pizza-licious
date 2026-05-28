@@ -24,14 +24,14 @@ public class GarlicKnots implements OrderItem {
     @Override
     public BigDecimal getPrice() { return KNOT_PRICE.multiply(BigDecimal.valueOf(quantity)); }
 
-    /** Receipt line: quantity plus "Garlic Knot(s)". */
+    /** Receipt line for the knots. */
     @Override
-    public String getDescription() {
-        String unit = (quantity == 1) ? "knot" : "knots";
-        return quantity + " Garlic " + unit;
+    public String[] getDescription() {
+        String unit = (quantity == 1) ? "piece" : "pieces";
+        return new String[] { "GARLIC KNOTS: " + quantity + " " + unit };
     }
 
     /** Prints the receipt format when Java needs a string. */
     @Override
-    public String toString() { return getDescription(); }
+    public String toString() { return String.join("\n", getDescription()); }
 }

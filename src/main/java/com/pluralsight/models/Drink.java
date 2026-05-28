@@ -28,11 +28,13 @@ public class Drink implements OrderItem {
     @Override
     public BigDecimal getPrice() { return size.getPrice(); }
 
-    /** Receipt line: size and flavor. */
+    /** Receipt line for the drink. */
     @Override
-    public String getDescription() { return size.getDisplayName() + " " + flavor.getDisplayName(); }
+    public String[] getDescription() {
+        return new String[] { "DRINK: " + size.getDisplayName() + " " + flavor.getDisplayName() };
+    }
 
     /** Prints the receipt format when Java needs a string. */
     @Override
-    public String toString() { return getDescription(); }
+    public String toString() { return String.join("\n", getDescription()); }
 }
