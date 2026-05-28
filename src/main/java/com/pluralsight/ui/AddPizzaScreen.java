@@ -1,5 +1,6 @@
 package com.pluralsight.ui;
 
+import com.pluralsight.models.Topping;
 import com.pluralsight.models.Pizza;
 import com.pluralsight.models.Size;
 import com.pluralsight.models.CrustType;
@@ -69,6 +70,19 @@ public class AddPizzaScreen {
         // Require at least one topping
         if (pizza.getToppings().isEmpty()) {
             System.out.println("\nA pizza must have at least one topping. Pizza not added.");
+            return null;
+        }
+
+        // Require at least one sauce
+        boolean hasSauce = false;
+        for (Topping t : pizza.getToppings()) {
+            if (t instanceof Sauce) {
+                hasSauce = true;
+                break;
+            }
+        }
+        if (!hasSauce) {
+            System.out.println("\nA pizza must have at least one sauce. Pizza not added.");
             return null;
         }
 
