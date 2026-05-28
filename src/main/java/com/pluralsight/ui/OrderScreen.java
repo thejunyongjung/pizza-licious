@@ -4,6 +4,7 @@ import com.pluralsight.models.Order;
 import com.pluralsight.models.OrderItem;
 
 import com.pluralsight.models.Pizza;
+import com.pluralsight.models.Drink;
 
 import java.util.List;
 import java.util.Scanner;
@@ -85,8 +86,11 @@ public class OrderScreen {
     }
 
     private void addDrink(Order order) {
-        // TODO P14: launch AddDrinkScreen, add the result to the order
-        System.out.println("\n[...Add Drink screen coming in P14]");
+        AddDrinkScreen addDrinkScreen = new AddDrinkScreen(scanner);
+        Drink drink = addDrinkScreen.getDrink();
+        if (drink != null) {
+            order.addItem(drink);
+        }
     }
 
     private void addKnots(Order order) {
