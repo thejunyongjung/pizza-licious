@@ -19,7 +19,10 @@ public class AddGarlicKnotsScreen {
         if (quantity == -1) return null;
 
         GarlicKnots knots = new GarlicKnots(quantity);
-        System.out.println("\nGarlic Knots added: " + knots.getDescription());
+        System.out.println("\nGarlic Knots added:");
+        for (String line : knots.getDescription()) {
+            System.out.println(line);
+        }
         return knots;
     }
 

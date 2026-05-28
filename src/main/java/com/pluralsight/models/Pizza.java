@@ -37,7 +37,6 @@ public class Pizza implements OrderItem {
     public void addTopping(Topping topping) { this.toppings.add(topping); }
     public void removeTopping(Topping topping) { this.toppings.remove(topping); }
 
-
     // OrderItem implementation
     /** Adds up the size base price and every topping. */
     @Override
@@ -49,28 +48,28 @@ public class Pizza implements OrderItem {
         return total;
     }
 
-    /** Builds the receipt text for this pizza. */
+    /** Receipt lines: header on top, toppings below. */
     @Override
-    public String getDescription() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(size.getDisplayName()).append(" Pizza");
-        sb.append(" - ").append(crust.getDisplayName()).append(" Crust");
-        if (stuffedCrust) {
-            sb.append(" (Stuffed)");
-        }
+    public String[] getDescription() {
+        List<String> lines = new ArrayList<>();
+
+        String header = "PIZZA: " + size.getDisplayName() + " "
+                + crust.getDisplayName() + " Crust";
+        if (stuffedCrust) header += " (Stuffed)";
+        lines.add(header);
+
         if (!toppings.isEmpty()) {
-            sb.append(" - ");
-            for (int i = 0; i < toppings.size(); i++) {
-                if (i > 0) sb.append(", ");
-                Topping t = toppings.get(i);
-                if (t.isExtra()) sb.append("Extra ");
-                sb.append(t.getName());
+            lines.add("  Toppings:");
+            for (Topping t : toppings) {
+                String prefix = t.isExtra() ? "Extra " : "";
+                lines.add("    - " + prefix + t.getName());
             }
         }
-        return sb.toString();
+
+        return lines.toArray(new String[0]);
     }
 
     /** Prints the receipt format when Java needs a string. */
     @Override
-    public String toString() { return getDescription(); }
+    public String toString() { return String.join("\n", getDescription()); }
 }

@@ -47,7 +47,10 @@ public class AddPizzaScreen {
         // STEP 8: Stuffed crust
         pizza.setStuffedCrust(promptYesNo("\nStuffed crust? (y/n): "));
 
-        System.out.println("\nPizza added: " + pizza.getDescription());
+        System.out.println("\nPizza added:");
+        for (String line : pizza.getDescription()) {
+            System.out.println(line);
+        }
         return pizza;
     }
 
