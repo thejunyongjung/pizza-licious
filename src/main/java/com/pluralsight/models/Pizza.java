@@ -15,6 +15,10 @@ public class Pizza implements OrderItem {
     private List<Topping> toppings;
 
     public Pizza(Size size, CrustType crust, boolean stuffedCrust) {
+        // Reject invalid input
+        if (size == null) throw new IllegalArgumentException("Size cannot be null");
+        if (crust == null) throw new IllegalArgumentException("Crust cannot be null");
+
         this.size = size;
         this.crust = crust;
         this.stuffedCrust = stuffedCrust;
@@ -28,13 +32,25 @@ public class Pizza implements OrderItem {
     public List<Topping> getToppings() { return toppings; }
 
     // Setters
-    public void setSize(Size size) { this.size = size; }
-    public void setCrust(CrustType crust) { this.crust = crust; }
+    public void setSize(Size size) {
+        if (size == null) throw new IllegalArgumentException("Size cannot be null");
+        this.size = size;
+    }
+    public void setCrust(CrustType crust) {
+        if (crust == null) throw new IllegalArgumentException("Crust cannot be null");
+        this.crust = crust;
+    }
     public void setStuffedCrust(boolean stuffedCrust) { this.stuffedCrust = stuffedCrust; }
-    public void setToppings(List<Topping> toppings) { this.toppings = toppings; }
+    public void setToppings(List<Topping> toppings) {
+        if (toppings == null) throw new IllegalArgumentException("Toppings cannot be null");
+        this.toppings = toppings;
+    }
 
     // Topping management
-    public void addTopping(Topping topping) { this.toppings.add(topping); }
+    public void addTopping(Topping topping) {
+        if (topping == null) throw new IllegalArgumentException("Topping cannot be null");
+        this.toppings.add(topping);
+    }
     public void removeTopping(Topping topping) { this.toppings.remove(topping); }
 
     /** Type label for the receipt header. Subclasses override. */
