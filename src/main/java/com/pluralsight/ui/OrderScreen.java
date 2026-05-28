@@ -56,7 +56,7 @@ public class OrderScreen {
     // SCREEN UI
     private void printOrder(Order order) {
         System.out.println();
-        System.out.println("===== Current Order =====");
+        System.out.println("=".repeat(22) + " Current Order " + "=".repeat(23));
         List<OrderItem> items = order.getItemsNewestFirst();
         if (items.isEmpty()) {
             System.out.println("(no items yet)");
