@@ -5,6 +5,7 @@ import com.pluralsight.models.OrderItem;
 
 import com.pluralsight.models.Pizza;
 import com.pluralsight.models.Drink;
+import com.pluralsight.models.GarlicKnots;
 
 import java.util.List;
 import java.util.Scanner;
@@ -94,8 +95,11 @@ public class OrderScreen {
     }
 
     private void addKnots(Order order) {
-        // TODO P15: launch AddGarlicKnotsScreen, add the result to the order
-        System.out.println("\n[...Add Garlic Knots screen coming in P15]");
+        AddGarlicKnotsScreen addKnotsScreen = new AddGarlicKnotsScreen(scanner);
+        GarlicKnots knots = addKnotsScreen.getKnots();
+        if (knots != null) {
+            order.addItem(knots);
+        }
     }
 
     /** Returns true if checkout succeeded so the order loop should exit. */
