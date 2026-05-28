@@ -66,6 +66,12 @@ public class AddPizzaScreen {
         addSauces(pizza);
         addSides(pizza);
 
+        // Require at least one topping
+        if (pizza.getToppings().isEmpty()) {
+            System.out.println("\nA pizza must have at least one topping. Pizza not added.");
+            return null;
+        }
+
         pizza.setStuffedCrust(promptYesNo("\nStuffed crust? (y/n): "));
 
         System.out.println("\nPizza added:");
