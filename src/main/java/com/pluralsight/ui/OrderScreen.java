@@ -3,6 +3,8 @@ package com.pluralsight.ui;
 import com.pluralsight.models.Order;
 import com.pluralsight.models.OrderItem;
 
+import com.pluralsight.models.Pizza;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -75,8 +77,11 @@ public class OrderScreen {
 
     // ACTIONS
     private void addPizza(Order order) {
-        // TODO P13: launch AddPizzaScreen, add the result to the order
-        System.out.println("\n[...Add Pizza screen coming in P13]");
+        AddPizzaScreen addPizzaScreen = new AddPizzaScreen(scanner);
+        Pizza pizza = addPizzaScreen.getPizza();
+        if (pizza != null) {
+            order.addItem(pizza);
+        }
     }
 
     private void addDrink(Order order) {
