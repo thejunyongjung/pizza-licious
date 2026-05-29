@@ -148,7 +148,7 @@ public class AddPizzaScreen {
     // ===== Topping loops =====
     private void addMeats(Pizza pizza) {
         if (countToppings(pizza) >= MAX_TOPPINGS) return;
-        System.out.println(Colors.bold("\n----- Meats (priced per size) -----"));
+        System.out.println(Colors.bold("\n----- Meats (Premium - priced per size) -----"));
         Meat[] meats = Meat.values();
         String[] options = getEnumLabels(meats);
         while (countToppings(pizza) < MAX_TOPPINGS) {
@@ -170,7 +170,7 @@ public class AddPizzaScreen {
 
     private void addCheeses(Pizza pizza) {
         if (countToppings(pizza) >= MAX_TOPPINGS) return;
-        System.out.println(Colors.bold("\n----- Cheeses (priced per size) -----"));
+        System.out.println(Colors.bold("\n----- Cheeses (Premium - priced per size) -----"));
         Cheese[] cheeses = Cheese.values();
         String[] options = getEnumLabels(cheeses);
         while (countToppings(pizza) < MAX_TOPPINGS) {
