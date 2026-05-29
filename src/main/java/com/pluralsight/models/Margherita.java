@@ -1,5 +1,7 @@
 package com.pluralsight.models;
 
+import com.pluralsight.enums.*;
+
 /**
  * Classic Margherita — fixed at 12" Regular crust per the menu.
  * Size, crust, and toppings are all preset

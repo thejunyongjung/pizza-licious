@@ -1,11 +1,11 @@
-package com.pluralsight.models;
+package com.pluralsight.enums;
 
 import java.math.BigDecimal;
 
 public enum Size {
     PERSONAL_8 ("Personal 8\"", new BigDecimal("8.50")),
     MEDIUM_12 ("Medium 12\"", new BigDecimal("12.00")),
-    LARGE_16 ("LARGE 16\"", new BigDecimal("16.50"));
+    LARGE_16 ("Large 16\"", new BigDecimal("16.50"));
 
     private final String displayName;
     private final BigDecimal basePrice;

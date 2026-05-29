@@ -1,8 +1,8 @@
 package com.pluralsight.ui;
 
 import com.pluralsight.models.Drink;
-import com.pluralsight.models.DrinkFlavor;
-import com.pluralsight.models.DrinkSize;
+import com.pluralsight.enums.DrinkFlavor;
+import com.pluralsight.enums.DrinkSize;
 import com.pluralsight.util.Colors;
 
 import java.util.Scanner;

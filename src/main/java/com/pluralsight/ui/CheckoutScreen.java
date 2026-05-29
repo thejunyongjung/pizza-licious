@@ -3,7 +3,7 @@ package com.pluralsight.ui;
 import com.pluralsight.models.Order;
 import com.pluralsight.models.OrderItem;
 import com.pluralsight.util.Colors;
-import com.pluralsight.util.ReceiptWriter;
+import com.pluralsight.service.ReceiptWriter;
 
 import java.math.BigDecimal;
 import java.util.List;

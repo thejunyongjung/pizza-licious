@@ -1,5 +1,8 @@
 package com.pluralsight.models;
 
+import com.pluralsight.enums.Meat;
+import com.pluralsight.enums.Size;
+
 import java.math.BigDecimal;
 
 public class MeatTopping extends Topping {

@@ -2,6 +2,7 @@ package com.pluralsight.util;
 
 import com.pluralsight.models.GarlicKnots;
 import com.pluralsight.models.Order;
+import com.pluralsight.service.ReceiptWriter;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

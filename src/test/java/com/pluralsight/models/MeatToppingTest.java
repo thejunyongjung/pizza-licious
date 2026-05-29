@@ -1,5 +1,7 @@
 package com.pluralsight.models;
 
+import com.pluralsight.enums.Meat;
+import com.pluralsight.enums.Size;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
