@@ -34,4 +34,13 @@ public class Colors {
     public static String boldYellow(String t)      { return BOLD + YELLOW + t + RESET; }
     public static String boldMagenta(String t)     { return BOLD + MAGENTA + t + RESET; }
     public static String boldBrightWhite(String t) { return BOLD + BRIGHT_WHITE + t + RESET; }
+
+    /** Pauses for the given milliseconds — useful for demo pacing after colored banners. */
+    public static void pause(int millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            // Sleep was interrupted — ignore
+        }
+    }
 }

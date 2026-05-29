@@ -8,6 +8,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         printBanner();
+        Colors.pause(700);   // ← let the welcome banner breathe
 
         Scanner scanner = new Scanner(System.in);
         HomeScreen homeScreen = new HomeScreen(scanner);

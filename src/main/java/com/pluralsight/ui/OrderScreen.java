@@ -44,6 +44,7 @@ public class OrderScreen {
     }
 
     private void printOrder(Order order) {
+        Colors.pause(700);
         System.out.println();
         System.out.println(Colors.boldCyan("=".repeat(22) + " Current Order " + "=".repeat(23)));
 
