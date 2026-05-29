@@ -2,4 +2,4 @@
 
 ## Class Diagram
 
-![Class Diagram](docs/pizza-licious.drawio.png)
+![Class Diagram](docs/pizza-licious-diagram.png)
