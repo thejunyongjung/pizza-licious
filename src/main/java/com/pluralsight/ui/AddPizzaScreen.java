@@ -1,6 +1,5 @@
 package com.pluralsight.ui;
 
-import com.pluralsight.models.Topping;
 import com.pluralsight.models.Pizza;
 import com.pluralsight.models.Size;
 import com.pluralsight.models.CrustType;
@@ -14,8 +13,10 @@ import com.pluralsight.models.RegularTopping;
 import com.pluralsight.models.RegularToppingType;
 import com.pluralsight.models.Cheese;
 import com.pluralsight.models.CheeseTopping;
+import com.pluralsight.models.Topping;
 import com.pluralsight.models.Margherita;
 import com.pluralsight.models.Veggie;
+import com.pluralsight.util.Colors;
 
 import java.util.Scanner;
 
@@ -23,14 +24,19 @@ import java.util.Scanner;
 public class AddPizzaScreen {
     private static final int MAX_TOPPINGS = 7;
     private static final int MAX_SAUCES = 2;
+    private static final int LINE_LENGTH = 60;
+    private static final int BANNER_LENGTH = 85;   // matches longest length
 
     private final Scanner scanner;
 
     public AddPizzaScreen(Scanner scanner) { this.scanner = scanner; }
 
-    /** Returns the built Pizza, or null if cancelled at crust/size or invalid. */
+    /** Returns the built Pizza, or null if cancelled at crust/size. */
     public Pizza getPizza() {
-        System.out.println("\n===== Add Pizza =====");
+        String title = " Add Pizza ";
+        int side = (BANNER_LENGTH - title.length()) / 2;
+        System.out.println(Colors.boldRed("\n" + "=".repeat(side) + title
+                + "=".repeat(BANNER_LENGTH - title.length() - side)));
 
         // STEP 0: Variant (Build your own, Margherita, Veggie)
         int variant = promptPizzaType();
@@ -48,7 +54,12 @@ public class AddPizzaScreen {
             return pizza;
         }
 
-        // Build your own — full 8-step flow
+        // Build your own — may need to retry if validation fails
+        return buildCustomPizza();
+    }
+
+    /** Walks the cashier through a custom pizza build. */
+    private Pizza buildCustomPizza() {
         CrustType crust = promptCrust();
         if (crust == null) return null;
 
@@ -56,6 +67,9 @@ public class AddPizzaScreen {
         if (size == null) return null;
 
         Pizza pizza = new Pizza(size, crust, false);
+
+        // Limit of Topping
+        System.out.println(Colors.boldCyan("\n ===== Max " + MAX_TOPPINGS + " toppings allowed. ====="));
 
         addMeats(pizza);
         addCheeses(pizza);
@@ -65,21 +79,25 @@ public class AddPizzaScreen {
 
         // Require at least one topping
         if (pizza.getToppings().isEmpty()) {
-            System.out.println("\nA pizza must have at least one topping. Pizza not added.");
-            return null;
+            System.out.println(Colors.red("\nA pizza must have at least one topping."));
+            return askRetry();
         }
 
-        // Require at least one sauce
+        // Check for sauce — if missing, show the pizza preview and offer a chance to add sauce
         boolean hasSauce = false;
         for (Topping t : pizza.getToppings()) {
-            if (t instanceof Sauce) {
-                hasSauce = true;
-                break;
-            }
+            if (t instanceof Sauce) { hasSauce = true; break; }
         }
         if (!hasSauce) {
-            System.out.println("\nA pizza must have at least one sauce. Pizza not added.");
-            return null;
+            System.out.println(Colors.dim("-".repeat(LINE_LENGTH)));
+            for (String line : pizza.getDescription()) {
+                System.out.println(line);
+            }
+            if (!promptYesNo("\nAdd this pizza to your order anyway? (y/n): ")) {
+                return askRetry();
+            }
+            // User said yes → give them a chance to add a sauce now
+            addSauces(pizza);
         }
 
         pizza.setStuffedCrust(promptYesNo("\nStuffed crust? (y/n): "));
@@ -88,9 +106,18 @@ public class AddPizzaScreen {
         return pizza;
     }
 
-    /** Prints "Pizza added:" with the receipt-style block. */
+    /** Asks whether to start over; returns a new pizza or null. */
+    private Pizza askRetry() {
+        if (promptYesNo("\nTry building another pizza? (y/n): ")) {
+            return buildCustomPizza();
+        }
+        return null;
+    }
+
+    /** Prints "Pizza added:" with a dim separator and the receipt-style block. */
     private void announceAdded(Pizza pizza) {
-        System.out.println("\nPizza added:");
+        System.out.println(Colors.green("\nPizza added:"));
+        System.out.println(Colors.dim("-".repeat(LINE_LENGTH)));
         for (String line : pizza.getDescription()) {
             System.out.println(line);
         }
@@ -132,7 +159,7 @@ public class AddPizzaScreen {
     // ===== Topping loops =====
     private void addMeats(Pizza pizza) {
         if (pizza.getToppings().size() >= MAX_TOPPINGS) return;
-        System.out.println("\n----- Meats (priced per size) -----");
+        System.out.println(Colors.bold("\n----- Meats (priced per size) -----"));
         Meat[] meats = Meat.values();
         String[] options = getEnumLabels(meats);
         while (pizza.getToppings().size() < MAX_TOPPINGS) {
@@ -140,17 +167,21 @@ public class AddPizzaScreen {
             if (index == -1) break;
             Meat selected = meats[index];
             if (hasMeat(pizza, selected)) {
-                System.out.println(selected.getDisplayName() + " is already on this pizza.");
+                System.out.println(Colors.yellow(selected.getDisplayName() + " is already on this pizza."));
                 continue;
             }
             boolean extra = promptYesNo("Extra? (y/n): ");
             pizza.addTopping(new MeatTopping(selected, extra));
+            if (pizza.getToppings().size() >= MAX_TOPPINGS) {
+                System.out.println(Colors.yellow("Max " + MAX_TOPPINGS + " toppings reached."));
+                break;
+            }
         }
     }
 
     private void addCheeses(Pizza pizza) {
         if (pizza.getToppings().size() >= MAX_TOPPINGS) return;
-        System.out.println("\n----- Cheeses (priced per size) -----");
+        System.out.println(Colors.bold("\n----- Cheeses (priced per size) -----"));
         Cheese[] cheeses = Cheese.values();
         String[] options = getEnumLabels(cheeses);
         while (pizza.getToppings().size() < MAX_TOPPINGS) {
@@ -158,17 +189,21 @@ public class AddPizzaScreen {
             if (index == -1) break;
             Cheese selected = cheeses[index];
             if (hasCheese(pizza, selected)) {
-                System.out.println(selected.getDisplayName() + " is already on this pizza.");
+                System.out.println(Colors.yellow(selected.getDisplayName() + " is already on this pizza."));
                 continue;
             }
             boolean extra = promptYesNo("Extra? (y/n): ");
             pizza.addTopping(new CheeseTopping(selected, extra));
+            if (pizza.getToppings().size() >= MAX_TOPPINGS) {
+                System.out.println(Colors.yellow("Max " + MAX_TOPPINGS + " toppings reached."));
+                break;
+            }
         }
     }
 
     private void addRegularToppings(Pizza pizza) {
         if (pizza.getToppings().size() >= MAX_TOPPINGS) return;
-        System.out.println("\n----- Regular Toppings (free) -----");
+        System.out.println(Colors.bold("\n----- Regular Toppings (free) -----"));
         RegularToppingType[] types = RegularToppingType.values();
         String[] options = getEnumLabels(types);
         while (pizza.getToppings().size() < MAX_TOPPINGS) {
@@ -176,29 +211,28 @@ public class AddPizzaScreen {
             if (index == -1) break;
             RegularToppingType selected = types[index];
             if (hasRegularTopping(pizza, selected)) {
-                System.out.println(selected.getDisplayName() + " is already on this pizza.");
+                System.out.println(Colors.yellow(selected.getDisplayName() + " is already on this pizza."));
                 continue;
             }
             pizza.addTopping(new RegularTopping(selected, false));
+            if (pizza.getToppings().size() >= MAX_TOPPINGS) {
+                System.out.println(Colors.yellow("Max " + MAX_TOPPINGS + " toppings reached."));
+                break;
+            }
         }
     }
 
     private void addSauces(Pizza pizza) {
-        if (pizza.getToppings().size() >= MAX_TOPPINGS) return;
-        System.out.println("\n----- Sauces (free, max " + MAX_SAUCES + ") -----");
+        // Sauces are NOT capped by MAX_TOPPINGS — they have their own MAX_SAUCES limit
+        System.out.println(Colors.bold("\n----- Sauces (free, max " + MAX_SAUCES + ") -----"));
         SauceType[] sauces = SauceType.values();
         String[] options = getEnumLabels(sauces);
-        while (pizza.getToppings().size() < MAX_TOPPINGS) {
-            // Stop at max sauces
-            if (countSauces(pizza) >= MAX_SAUCES) {
-                System.out.println("\nMax " + MAX_SAUCES + " sauces reached.");
-                break;
-            }
+        while (countSauces(pizza) < MAX_SAUCES) {
             int index = promptChoice("Select sauce:", options, "Done with sauces");
             if (index == -1) break;
             SauceType selected = sauces[index];
             if (hasSauce(pizza, selected)) {
-                System.out.println(selected.getDisplayName() + " is already on this pizza.");
+                System.out.println(Colors.yellow(selected.getDisplayName() + " is already on this pizza."));
                 continue;
             }
             pizza.addTopping(new Sauce(selected, false));
@@ -207,7 +241,7 @@ public class AddPizzaScreen {
 
     private void addSides(Pizza pizza) {
         if (pizza.getToppings().size() >= MAX_TOPPINGS) return;
-        System.out.println("\n----- Sides (free) -----");
+        System.out.println(Colors.bold("\n----- Sides (free) -----"));
         PizzaSide[] sides = PizzaSide.values();
         String[] options = getEnumLabels(sides);
         while (pizza.getToppings().size() < MAX_TOPPINGS) {
@@ -215,14 +249,18 @@ public class AddPizzaScreen {
             if (index == -1) break;
             PizzaSide selected = sides[index];
             if (hasSide(pizza, selected)) {
-                System.out.println(selected.getDisplayName() + " is already on this pizza.");
+                System.out.println(Colors.yellow(selected.getDisplayName() + " is already on this pizza."));
                 continue;
             }
             pizza.addTopping(new PizzaSideTopping(selected, false));
+            if (pizza.getToppings().size() >= MAX_TOPPINGS) {
+                System.out.println(Colors.yellow("Max " + MAX_TOPPINGS + " toppings reached."));
+                break;
+            }
         }
     }
 
-    // ===== Duplicate-check helpers =====
+    // ===== Duplicate / count helpers =====
     private boolean hasMeat(Pizza pizza, Meat meat) {
         for (Topping t : pizza.getToppings()) {
             if (t instanceof MeatTopping && ((MeatTopping) t).getMeat() == meat) return true;
@@ -267,12 +305,13 @@ public class AddPizzaScreen {
     }
 
     // ===== Helpers =====
+
     /** Numbered menu. Returns the chosen index (or -1 to exit). */
     private int promptChoice(String header, String[] options, String exitLabel) {
         // Loop until valid input
         while (true) {
             System.out.println();
-            System.out.println(header);
+            System.out.println(Colors.bold(header));
             for (int i = 0; i < options.length; i++) {
                 System.out.println((i + 1) + ") " + options[i]);
             }
@@ -285,10 +324,10 @@ public class AddPizzaScreen {
                 if (number == 0) return -1;
                 // Menu shows 1-based, array uses 0-based
                 if (number >= 1 && number <= options.length) return number - 1;
-                System.out.println("Choice must be between 0 and " + options.length + ".");
+                System.out.println(Colors.red("Choice must be between 0 and " + options.length + "."));
             } catch (NumberFormatException e) {
                 // User typed a non-number
-                System.out.println("Please enter a number.");
+                System.out.println(Colors.red("Please enter a number."));
             }
         }
     }
@@ -300,7 +339,7 @@ public class AddPizzaScreen {
             String input = scanner.nextLine().trim().toLowerCase();
             if (input.equals("y") || input.equals("yes")) return true;
             if (input.equals("n") || input.equals("no")) return false;
-            System.out.println("Please enter y or n.");
+            System.out.println(Colors.red("Please enter y or n."));
         }
     }
 
@@ -312,5 +351,16 @@ public class AddPizzaScreen {
             labels[i] = enumValues[i].toString();
         }
         return labels;
+    }
+
+    /** Builds a centered section header padded with dashes (40 chars total). */
+    private String sectionHeader(String label) {
+        final int width = 40;
+        String content = " " + label + " ";
+        int dashes = width - content.length();
+        if (dashes < 4) return "--" + content + "--";
+        int left = dashes / 2;
+        int right = dashes - left;
+        return "-".repeat(left) + content + "-".repeat(right);
     }
 }

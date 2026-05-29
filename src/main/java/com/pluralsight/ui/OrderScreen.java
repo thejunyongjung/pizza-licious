@@ -2,13 +2,12 @@ package com.pluralsight.ui;
 
 import com.pluralsight.models.Order;
 import com.pluralsight.models.OrderItem;
-
 import com.pluralsight.models.Pizza;
 import com.pluralsight.models.Drink;
 import com.pluralsight.models.GarlicKnots;
+import com.pluralsight.util.Colors;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Scanner;
 
@@ -20,7 +19,6 @@ public class OrderScreen {
 
     public OrderScreen(Scanner scanner) { this.scanner = scanner; }
 
-    /** Loops the order menu until the user checks out or cancels. */
     public void display(Order order) {
         boolean ordering = true;
         while (ordering) {
@@ -29,34 +27,26 @@ public class OrderScreen {
             String input = scanner.nextLine().trim();
 
             switch (input) {
-                case "1":
-                    addPizza(order);
-                    break;
-                case "2":
-                    addDrink(order);
-                    break;
-                case "3":
-                    addKnots(order);
-                    break;
+                case "1": addPizza(order); break;
+                case "2": addDrink(order); break;
+                case "3": addKnots(order); break;
                 case "4":
-                    if (checkout(order)) {
-                        ordering = false;
-                    }
+                    if (checkout(order)) ordering = false;
                     break;
                 case "0":
-                    System.out.println("\nOrder cancelled.");
+                    System.out.println(Colors.yellow("\nOrder cancelled."));
                     ordering = false;
                     break;
                 default:
-                    System.out.println("\nInvalid choice. Please enter 1-4 or 0.");
+                    System.out.println(Colors.red("\nInvalid choice. Please enter 1-4 or 0."));
             }
         }
     }
 
-    // SCREEN UI
     private void printOrder(Order order) {
         System.out.println();
-        System.out.println("=".repeat(22) + " Current Order " + "=".repeat(23));
+        System.out.println(Colors.boldCyan("=".repeat(22) + " Current Order " + "=".repeat(23)));
+
         List<OrderItem> items = order.getItemsNewestFirst();
         if (items.isEmpty()) {
             System.out.println("(no items yet)");
@@ -66,55 +56,50 @@ public class OrderScreen {
                 System.out.println();
             }
         }
-        System.out.println("Total: " + String.format("$%.2f", order.getTotal()));
+
+        // Default white line between items and total
+        System.out.println("-".repeat(LINE_LENGTH));
+        // Right-aligned total
+        System.out.println(formatTotalLine("Total:", order.getTotal()));
+        // Cyan line under total
+        System.out.println(Colors.cyan("-".repeat(LINE_LENGTH)));
     }
 
-    /** Prints one item with price on the first line. */
+    private String formatTotalLine(String label, BigDecimal total) {
+        String priceStr = String.format("$%.2f", total);
+        int spaces = LINE_LENGTH - label.length() - priceStr.length();
+        if (spaces < 1) spaces = 1;
+        return label + " ".repeat(spaces) + priceStr;
+    }
+
     private void printItem(OrderItem item) {
         String priceString = String.format("$%.2f", item.getPrice());
-        int maxLineLength = LINE_LENGTH - priceString.length() - 1;
+        String[] lines = item.getDescription();
 
-        List<String> lines = new ArrayList<>();
-        for (String line : item.getDescription()) {
-            lines.addAll(Arrays.asList(splitIntoLines(line, maxLineLength)));
-        }
-
-        // First line + price right-aligned
-        String firstLine = lines.get(0);
+        String firstLine = lines[0];
         int spaces = LINE_LENGTH - firstLine.length() - priceString.length();
         if (spaces < 1) spaces = 1;
-        System.out.println(firstLine + " ".repeat(spaces) + priceString);
+        System.out.println(colorizeItemLabel(firstLine) + " ".repeat(spaces) + priceString);
 
-        // Remaining lines as-is
-        for (int i = 1; i < lines.size(); i++) {
-            System.out.println(lines.get(i));
+        for (int i = 1; i < lines.length; i++) {
+            System.out.println(lines[i]);
         }
     }
 
-    /** Splits long text into shorter lines without breaking words. */
-    private String[] splitIntoLines(String text, int maxLineLength) {
-        // Short text? Return as-is so leading spaces stay.
-        if (text.length() <= maxLineLength) {
-            return new String[] { text };
+    private String colorizeItemLabel(String line) {
+        if (line.startsWith("PIZZA:") || line.startsWith("MARGHERITA:") || line.startsWith("VEGGIE:")) {
+            int colonIdx = line.indexOf(":");
+            return Colors.boldRed(line.substring(0, colonIdx)) + line.substring(colonIdx);
         }
-
-        List<String> lines = new ArrayList<>();
-        String[] words = text.split(" ");
-        StringBuilder current = new StringBuilder();
-        for (String word : words) {
-            int spaceBefore = !current.isEmpty() ? 1 : 0;
-            if (current.length() + spaceBefore + word.length() > maxLineLength && !current.isEmpty()) {
-                lines.add(current.toString());
-                current = new StringBuilder();
-            }
-            if (!current.isEmpty()) current.append(" ");
-            current.append(word);
+        if (line.startsWith("DRINK:")) {
+            return Colors.boldCyan("DRINK") + line.substring(5);
         }
-        if (!current.isEmpty()) lines.add(current.toString());
-        return lines.toArray(new String[0]);
+        if (line.startsWith("GARLIC KNOTS:")) {
+            return Colors.boldYellow("GARLIC KNOTS") + line.substring(12);
+        }
+        return line;
     }
 
-    // MENU UI
     private void printMenu() {
         System.out.println();
         System.out.println("1) Add Pizza");
@@ -125,35 +110,27 @@ public class OrderScreen {
         System.out.print("Enter your choice: ");
     }
 
-    // ACTIONS
     private void addPizza(Order order) {
         AddPizzaScreen addPizzaScreen = new AddPizzaScreen(scanner);
         Pizza pizza = addPizzaScreen.getPizza();
-        if (pizza != null) {
-            order.addItem(pizza);
-        }
+        if (pizza != null) order.addItem(pizza);
     }
 
     private void addDrink(Order order) {
         AddDrinkScreen addDrinkScreen = new AddDrinkScreen(scanner);
         Drink drink = addDrinkScreen.getDrink();
-        if (drink != null) {
-            order.addItem(drink);
-        }
+        if (drink != null) order.addItem(drink);
     }
 
     private void addKnots(Order order) {
         AddGarlicKnotsScreen addKnotsScreen = new AddGarlicKnotsScreen(scanner);
         GarlicKnots knots = addKnotsScreen.getKnots();
-        if (knots != null) {
-            order.addItem(knots);
-        }
+        if (knots != null) order.addItem(knots);
     }
 
-    /** Returns true if checkout succeeded so the order loop should exit. */
     private boolean checkout(Order order) {
         if (!order.isValid()) {
-            System.out.println("\nCannot check out an empty order. Add an item first.");
+            System.out.println(Colors.red("\nCannot check out an empty order. Add an item first."));
             return false;
         }
         CheckoutScreen checkoutScreen = new CheckoutScreen(scanner);

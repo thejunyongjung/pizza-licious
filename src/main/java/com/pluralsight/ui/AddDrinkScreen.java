@@ -3,6 +3,7 @@ package com.pluralsight.ui;
 import com.pluralsight.models.Drink;
 import com.pluralsight.models.DrinkFlavor;
 import com.pluralsight.models.DrinkSize;
+import com.pluralsight.util.Colors;
 
 import java.util.Scanner;
 
@@ -14,7 +15,7 @@ public class AddDrinkScreen {
 
     /** Returns the built Drink, or null if cancelled. */
     public Drink getDrink() {
-        System.out.println("\n===== Add Drink =====");
+        System.out.println(Colors.boldCyan("\n" + "=".repeat(24) + " Add Drink " + "=".repeat(25)));
 
         // Size
         DrinkSize size = promptDrinkSize();
@@ -25,7 +26,8 @@ public class AddDrinkScreen {
         if (flavor == null) return null;
 
         Drink drink = new Drink(size, flavor);
-        System.out.println("\nDrink added:");
+        System.out.println(Colors.green("\nDrink added:"));
+        System.out.println(Colors.dim("-".repeat(60)));
         for (String line : drink.getDescription()) {
             System.out.println(line);
         }
@@ -61,7 +63,7 @@ public class AddDrinkScreen {
         // Loop until valid input
         while (true) {
             System.out.println();
-            System.out.println(header);
+            System.out.println(Colors.bold(header));
             for (int i = 0; i < options.length; i++) {
                 System.out.println((i + 1) + ") " + options[i]);
             }
