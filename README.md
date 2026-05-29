@@ -53,10 +53,33 @@ java -cp target/classes com.pluralsight.Main
 
 ## 🧪 Tests
 
-JUnit 5 covers pricing math, order operations, garlic knots, the AddGarlicKnotsScreen flow, and ReceiptWriter file output:
+The project ships with **6 JUnit 5 tests** across the model, ui, and service layers. All tests follow the **Arrange / Act / Assert** pattern, and currency assertions use `BigDecimal.compareTo` (not `equals`) to avoid scale mismatches.
+
+| Test class | What it verifies |
+|---|---|
+| `models.PizzaTest` | A custom pizza's price equals base + all topping prices |
+| `models.MargheritaTest` | The signature Margherita has a fixed expected price |
+| `models.MeatToppingTest` | Extra meat adds the correct surcharge by size |
+| `models.OrderTest` | A heterogeneous cart (pizza + drink + garlic knots) totals correctly |
+| `ui.AddGarlicKnotsScreenTest` | The screen returns a `GarlicKnots` with the prompted quantity (stubbed `Scanner`) |
+| `service.ReceiptWriterTest` | `save(order)` creates a new file under `receipts/` |
+
+Run them all:
 
 ```bash
 mvn test
+```
+
+Run a single test class:
+
+```bash
+mvn test -Dtest=PizzaTest
+```
+
+Run a single test method:
+
+```bash
+mvn test -Dtest=PizzaTest#getPrice_should_includeSizeAndAllToppings
 ```
 
 ## 📁 Project Structure
