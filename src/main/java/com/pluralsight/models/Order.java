@@ -20,10 +20,16 @@ public class Order {
 
     // Setter
     /** Stores a defensive copy so callers can't mutate Order's state via their original list. */
-    public void setItems(List<OrderItem> items) { this.items = new ArrayList<>(items); }
+    public void setItems(List<OrderItem> items) {
+        if (items == null) throw new IllegalArgumentException("Items cannot be null");
+        this.items = new ArrayList<>(items);
+    }
 
     // Item management
-    public void addItem(OrderItem item) { items.add(item); }
+    public void addItem(OrderItem item) {
+        if (item == null) throw new IllegalArgumentException("Item cannot be null");
+        items.add(item);
+    }
     public void removeItem(int index) { items.remove(index); }
     public void clear() { items.clear();}
 

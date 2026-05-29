@@ -11,6 +11,10 @@ public class Drink implements OrderItem {
     private DrinkFlavor flavor;
 
     public Drink(DrinkSize size, DrinkFlavor flavor) {
+        // Reject invalid input
+        if (size == null) throw new IllegalArgumentException("Size cannot be null");
+        if (flavor == null) throw new IllegalArgumentException("Flavor cannot be null");
+
         this.size = size;
         this.flavor = flavor;
     }
@@ -20,8 +24,14 @@ public class Drink implements OrderItem {
     public DrinkFlavor getFlavor() { return flavor; }
 
     // Setters
-    public void setSize(DrinkSize size) { this.size = size; }
-    public void setFlavor(DrinkFlavor flavor) { this.flavor = flavor; }
+    public void setSize(DrinkSize size) {
+        if (size == null) throw new IllegalArgumentException("Size cannot be null");
+        this.size = size;
+    }
+    public void setFlavor(DrinkFlavor flavor) {
+        if (flavor == null) throw new IllegalArgumentException("Flavor cannot be null");
+        this.flavor = flavor;
+    }
 
     // OrderItem implementation
     /** Reads the price directly from the drink's size. */

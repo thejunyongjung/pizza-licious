@@ -7,6 +7,7 @@ public class PizzaSideTopping extends Topping {
 
     public PizzaSideTopping(PizzaSide side, boolean isExtra) {
         super(isExtra);
+        if (side == null) throw new IllegalArgumentException("Side cannot be null");
         this.side = side;
     }
 
@@ -14,7 +15,10 @@ public class PizzaSideTopping extends Topping {
     public PizzaSide getSide() { return side; }
 
     // Setter
-    public void setSide(PizzaSide side) { this.side = side; }
+    public void setSide(PizzaSide side) {
+        if (side == null) throw new IllegalArgumentException("Side cannot be null");
+        this.side = side;
+    }
 
     @Override
     public BigDecimal getPrice(Size size) { return BigDecimal.ZERO; } // ZERO —> a static constant

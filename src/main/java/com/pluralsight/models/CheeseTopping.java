@@ -7,6 +7,7 @@ public class CheeseTopping extends Topping {
 
     public CheeseTopping(Cheese cheese, boolean extra) {
         super(extra);
+        if (cheese == null) throw new IllegalArgumentException("Cheese cannot be null");
         this.cheese = cheese;
     }
 
@@ -14,7 +15,10 @@ public class CheeseTopping extends Topping {
     public Cheese getCheese() { return cheese; }
 
     // Setter
-    public void setCheese(Cheese cheese) { this.cheese = cheese; }
+    public void setCheese(Cheese cheese) {
+        if (cheese == null) throw new IllegalArgumentException("Cheese cannot be null");
+        this.cheese = cheese;
+    }
 
     @Override
     public BigDecimal getPrice(Size size) {

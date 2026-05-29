@@ -12,13 +12,19 @@ public class GarlicKnots implements OrderItem {
 
     private int quantity;
 
-    public GarlicKnots(int quantity) { this.quantity = quantity; }
+    public GarlicKnots(int quantity) {
+        if (quantity < 1) throw new IllegalArgumentException("Quantity must be at least 1");
+        this.quantity = quantity;
+    }
 
     // Getter
     public int getQuantity() { return quantity; }
 
     // Setter
-    public void setQuantity(int quantity) { this.quantity = quantity; }
+    public void setQuantity(int quantity) {
+        if (quantity < 1) throw new IllegalArgumentException("Quantity must be at least 1");
+        this.quantity = quantity;
+    }
 
     /** Quantity times the knot price ($1.50 each). */
     @Override

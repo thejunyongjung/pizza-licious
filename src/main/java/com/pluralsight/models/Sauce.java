@@ -7,6 +7,7 @@ public class Sauce extends Topping {
 
     public Sauce(SauceType sauce, boolean isExtra) {
         super(isExtra);
+        if (sauce == null) throw new IllegalArgumentException("Sauce cannot be null");
         this.sauce = sauce;
     }
 
@@ -14,7 +15,10 @@ public class Sauce extends Topping {
     public SauceType getSauce() { return sauce; }
 
     // Setter
-    public void setSauce(SauceType sauce) { this.sauce = sauce; }
+    public void setSauce(SauceType sauce) {
+        if (sauce == null) throw new IllegalArgumentException("Sauce cannot be null");
+        this.sauce = sauce;
+    }
 
     @Override
     public BigDecimal getPrice(Size size) { return BigDecimal.ZERO; } // ZERO —> a static constant
