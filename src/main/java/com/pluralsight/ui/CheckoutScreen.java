@@ -19,6 +19,7 @@ public class CheckoutScreen {
 
     /** Returns true if the customer confirmed and the receipt was saved. */
     public boolean display(Order order) {
+        Colors.pause(700);
         System.out.println(Colors.boldMagenta("\n" + "=".repeat(25) + " Checkout " + "=".repeat(25)));
         System.out.println(Colors.dim(center("Order ID: " + order.getOrderId(), LINE_LENGTH)));
         System.out.println();

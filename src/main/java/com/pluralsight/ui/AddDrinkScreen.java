@@ -15,6 +15,7 @@ public class AddDrinkScreen {
 
     /** Returns the built Drink, or null if cancelled. */
     public Drink getDrink() {
+        Colors.pause(700);
         System.out.println(Colors.boldCyan("\n" + "=".repeat(24) + " Add Drink " + "=".repeat(25)));
 
         // Size

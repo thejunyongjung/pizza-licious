@@ -13,6 +13,7 @@ public class AddGarlicKnotsScreen {
 
     /** Returns the built GarlicKnots, or null if cancelled. */
     public GarlicKnots getKnots() {
+        Colors.pause(700);
         System.out.println(Colors.boldYellow("\n" + "=".repeat(21) + " Add Garlic Knots " + "=".repeat(21)));
         System.out.println("$1.50 each");
 

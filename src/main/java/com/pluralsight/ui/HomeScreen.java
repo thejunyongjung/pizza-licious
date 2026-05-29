@@ -33,6 +33,7 @@ public class HomeScreen {
     }
 
     private void printMenu() {
+        Colors.pause(700);
         System.out.println();
         System.out.println(Colors.bold("===== PIZZA-licious ====="));
         System.out.println("1) New Order");

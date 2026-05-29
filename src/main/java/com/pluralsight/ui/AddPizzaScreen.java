@@ -33,6 +33,7 @@ public class AddPizzaScreen {
 
     /** Returns the built Pizza, or null if cancelled at crust/size. */
     public Pizza getPizza() {
+        Colors.pause(700);
         String title = " Add Pizza ";
         int side = (BANNER_LENGTH - title.length()) / 2;
         System.out.println(Colors.boldRed("\n" + "=".repeat(side) + title
@@ -69,7 +70,7 @@ public class AddPizzaScreen {
         Pizza pizza = new Pizza(size, crust, false);
 
         // Limit of Topping
-        System.out.println(Colors.boldCyan("\n ===== Max " + MAX_TOPPINGS + " toppings allowed. ====="));
+        System.out.println(Colors.boldCyan("\n===== Max " + MAX_TOPPINGS + " toppings allowed. ====="));
 
         addMeats(pizza);
         addCheeses(pizza);
@@ -128,6 +129,11 @@ public class AddPizzaScreen {
 
     private Size promptSize() {
         Size[] sizes = Size.values();
+        // Find the longest display name so the price column lines up
+        int maxLength = 0;
+        for (Size s : sizes) {
+            if (s.getDisplayName().length() > maxLength) maxLength = s.getDisplayName().length();
+        }
         // Build options with prices so the menu stays in sync with Size
         String[] options = new String[sizes.length];
         for (int i = 0; i < sizes.length; i++) {
@@ -141,11 +147,11 @@ public class AddPizzaScreen {
 
     // ===== Topping loops =====
     private void addMeats(Pizza pizza) {
-        if (pizza.getToppings().size() >= MAX_TOPPINGS) return;
+        if (countToppings(pizza) >= MAX_TOPPINGS) return;
         System.out.println(Colors.bold("\n----- Meats (priced per size) -----"));
         Meat[] meats = Meat.values();
         String[] options = getEnumLabels(meats);
-        while (pizza.getToppings().size() < MAX_TOPPINGS) {
+        while (countToppings(pizza) < MAX_TOPPINGS) {
             int index = promptChoice("Select meat:", options, "Done with meats");
             if (index == -1) break;
             Meat selected = meats[index];
@@ -155,7 +161,7 @@ public class AddPizzaScreen {
             }
             boolean extra = promptYesNo("Extra? (y/n): ");
             pizza.addTopping(new MeatTopping(selected, extra));
-            if (pizza.getToppings().size() >= MAX_TOPPINGS) {
+            if (countToppings(pizza) >= MAX_TOPPINGS) {
                 System.out.println(Colors.yellow("Max " + MAX_TOPPINGS + " toppings reached."));
                 break;
             }
@@ -163,11 +169,11 @@ public class AddPizzaScreen {
     }
 
     private void addCheeses(Pizza pizza) {
-        if (pizza.getToppings().size() >= MAX_TOPPINGS) return;
+        if (countToppings(pizza) >= MAX_TOPPINGS) return;
         System.out.println(Colors.bold("\n----- Cheeses (priced per size) -----"));
         Cheese[] cheeses = Cheese.values();
         String[] options = getEnumLabels(cheeses);
-        while (pizza.getToppings().size() < MAX_TOPPINGS) {
+        while (countToppings(pizza) < MAX_TOPPINGS) {
             int index = promptChoice("Select cheese:", options, "Done with cheeses");
             if (index == -1) break;
             Cheese selected = cheeses[index];
@@ -177,7 +183,7 @@ public class AddPizzaScreen {
             }
             boolean extra = promptYesNo("Extra? (y/n): ");
             pizza.addTopping(new CheeseTopping(selected, extra));
-            if (pizza.getToppings().size() >= MAX_TOPPINGS) {
+            if (countToppings(pizza) >= MAX_TOPPINGS) {
                 System.out.println(Colors.yellow("Max " + MAX_TOPPINGS + " toppings reached."));
                 break;
             }
@@ -185,11 +191,11 @@ public class AddPizzaScreen {
     }
 
     private void addRegularToppings(Pizza pizza) {
-        if (pizza.getToppings().size() >= MAX_TOPPINGS) return;
+        if (countToppings(pizza) >= MAX_TOPPINGS) return;
         System.out.println(Colors.bold("\n----- Regular Toppings (free) -----"));
         RegularToppingType[] types = RegularToppingType.values();
         String[] options = getEnumLabels(types);
-        while (pizza.getToppings().size() < MAX_TOPPINGS) {
+        while (countToppings(pizza) < MAX_TOPPINGS) {
             int index = promptChoice("Select topping:", options, "Done with toppings");
             if (index == -1) break;
             RegularToppingType selected = types[index];
@@ -198,7 +204,7 @@ public class AddPizzaScreen {
                 continue;
             }
             pizza.addTopping(new RegularTopping(selected, false));
-            if (pizza.getToppings().size() >= MAX_TOPPINGS) {
+            if (countToppings(pizza) >= MAX_TOPPINGS) {
                 System.out.println(Colors.yellow("Max " + MAX_TOPPINGS + " toppings reached."));
                 break;
             }
@@ -230,11 +236,11 @@ public class AddPizzaScreen {
     }
 
     private void addSides(Pizza pizza) {
-        if (pizza.getToppings().size() >= MAX_TOPPINGS) return;
+        // Sides are NOT capped by MAX_TOPPINGS — naturally limited by how many side types exist
         System.out.println(Colors.bold("\n----- Sides (free) -----"));
         PizzaSide[] sides = PizzaSide.values();
         String[] options = getEnumLabels(sides);
-        while (pizza.getToppings().size() < MAX_TOPPINGS) {
+        while (countSides(pizza) < sides.length) {
             int index = promptChoice("Select side:", options, "Done with sides");
             if (index == -1) break;
             PizzaSide selected = sides[index];
@@ -243,10 +249,6 @@ public class AddPizzaScreen {
                 continue;
             }
             pizza.addTopping(new PizzaSideTopping(selected, false));
-            if (pizza.getToppings().size() >= MAX_TOPPINGS) {
-                System.out.println(Colors.yellow("Max " + MAX_TOPPINGS + " toppings reached."));
-                break;
-            }
         }
     }
 
@@ -284,6 +286,25 @@ public class AddPizzaScreen {
             if (t instanceof PizzaSideTopping && ((PizzaSideTopping) t).getSide() == side) return true;
         }
         return false;
+    }
+    /** Counts only meats, cheeses, and regular toppings — excludes sauces and sides. */
+    private int countToppings(Pizza pizza) {
+        int count = 0;
+        for (Topping t : pizza.getToppings()) {
+            // Sauces and sides have their own rules and are NOT capped by MAX_TOPPINGS
+            if (t instanceof MeatTopping || t instanceof CheeseTopping || t instanceof RegularTopping) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private int countSides(Pizza pizza) {
+        int count = 0;
+        for (Topping t : pizza.getToppings()) {
+            if (t instanceof PizzaSideTopping) count++;
+        }
+        return count;
     }
 
     private int countSauces(Pizza pizza) {
