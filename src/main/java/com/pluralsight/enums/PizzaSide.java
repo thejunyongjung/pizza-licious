@@ -1,4 +1,4 @@
-package com.pluralsight.models;
+package com.pluralsight.enums;
 
 public enum PizzaSide {
     RED_PEPPER("Red Pepper"),

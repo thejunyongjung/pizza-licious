@@ -1,4 +1,4 @@
-package com.pluralsight.models;
+package com.pluralsight.enums;
 
 import java.math.BigDecimal;
 

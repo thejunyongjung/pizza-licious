@@ -1,5 +1,7 @@
 package com.pluralsight.models;
 
+import com.pluralsight.enums.*;
+
 /**
  * Veggie pizza — fixed at 8" Regular crust per the menu.
  * Size, crust, and toppings are all preset

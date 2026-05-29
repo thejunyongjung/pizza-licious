@@ -1,5 +1,8 @@
 package com.pluralsight.models;
 
+import com.pluralsight.enums.DrinkFlavor;
+import com.pluralsight.enums.DrinkSize;
+
 import java.math.BigDecimal;
 
 /**

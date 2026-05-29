@@ -1,5 +1,8 @@
 package com.pluralsight.models;
 
+import com.pluralsight.enums.RegularToppingType;
+import com.pluralsight.enums.Size;
+
 import java.math.BigDecimal;
 
 public class RegularTopping extends Topping {

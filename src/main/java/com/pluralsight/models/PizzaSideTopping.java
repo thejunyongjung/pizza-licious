@@ -1,5 +1,8 @@
 package com.pluralsight.models;
 
+import com.pluralsight.enums.PizzaSide;
+import com.pluralsight.enums.Size;
+
 import java.math.BigDecimal;
 
 public class PizzaSideTopping extends Topping {

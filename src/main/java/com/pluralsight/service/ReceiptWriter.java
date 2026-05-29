@@ -1,4 +1,4 @@
-package com.pluralsight.util;
+package com.pluralsight.service;
 
 import com.pluralsight.models.Order;
 import com.pluralsight.models.OrderItem;

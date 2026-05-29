@@ -1,5 +1,8 @@
 package com.pluralsight.models;
 
+import com.pluralsight.enums.SauceType;
+import com.pluralsight.enums.Size;
+
 import java.math.BigDecimal;
 
 public class Sauce extends Topping {

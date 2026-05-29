@@ -1,17 +1,17 @@
 package com.pluralsight.ui;
 
 import com.pluralsight.models.Pizza;
-import com.pluralsight.models.Size;
-import com.pluralsight.models.CrustType;
-import com.pluralsight.models.Meat;
+import com.pluralsight.enums.Size;
+import com.pluralsight.enums.CrustType;
+import com.pluralsight.enums.Meat;
 import com.pluralsight.models.MeatTopping;
-import com.pluralsight.models.PizzaSide;
+import com.pluralsight.enums.PizzaSide;
 import com.pluralsight.models.PizzaSideTopping;
 import com.pluralsight.models.Sauce;
-import com.pluralsight.models.SauceType;
+import com.pluralsight.enums.SauceType;
 import com.pluralsight.models.RegularTopping;
-import com.pluralsight.models.RegularToppingType;
-import com.pluralsight.models.Cheese;
+import com.pluralsight.enums.RegularToppingType;
+import com.pluralsight.enums.Cheese;
 import com.pluralsight.models.CheeseTopping;
 import com.pluralsight.models.Topping;
 import com.pluralsight.models.Margherita;

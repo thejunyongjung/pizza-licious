@@ -1,5 +1,8 @@
 package com.pluralsight.models;
 
+import com.pluralsight.enums.CrustType;
+import com.pluralsight.enums.Size;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
