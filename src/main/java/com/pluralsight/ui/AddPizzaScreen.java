@@ -83,23 +83,6 @@ public class AddPizzaScreen {
             return askRetry();
         }
 
-        // Check for sauce — if missing, show the pizza preview and offer a chance to add sauce
-        boolean hasSauce = false;
-        for (Topping t : pizza.getToppings()) {
-            if (t instanceof Sauce) { hasSauce = true; break; }
-        }
-        if (!hasSauce) {
-            System.out.println(Colors.dim("-".repeat(LINE_LENGTH)));
-            for (String line : pizza.getDescription()) {
-                System.out.println(line);
-            }
-            if (!promptYesNo("\nAdd this pizza to your order anyway? (y/n): ")) {
-                return askRetry();
-            }
-            // User said yes → give them a chance to add a sauce now
-            addSauces(pizza);
-        }
-
         pizza.setStuffedCrust(promptYesNo("\nStuffed crust? (y/n): "));
 
         announceAdded(pizza);
@@ -224,12 +207,19 @@ public class AddPizzaScreen {
 
     private void addSauces(Pizza pizza) {
         // Sauces are NOT capped by MAX_TOPPINGS — they have their own MAX_SAUCES limit
-        System.out.println(Colors.bold("\n----- Sauces (free, max " + MAX_SAUCES + ") -----"));
+        System.out.println(Colors.bold("\n----- Sauces (free, min 1, max " + MAX_SAUCES + ") -----"));
         SauceType[] sauces = SauceType.values();
         String[] options = getEnumLabels(sauces);
         while (countSauces(pizza) < MAX_SAUCES) {
             int index = promptChoice("Select sauce:", options, "Done with sauces");
-            if (index == -1) break;
+            if (index == -1) {
+                // A pizza must have at least one sauce — refuse to exit otherwise
+                if (countSauces(pizza) == 0) {
+                    System.out.println(Colors.red("A pizza must have at least one sauce."));
+                    continue;
+                }
+                break;
+            }
             SauceType selected = sauces[index];
             if (hasSauce(pizza, selected)) {
                 System.out.println(Colors.yellow(selected.getDisplayName() + " is already on this pizza."));
