@@ -22,6 +22,7 @@ import java.util.Scanner;
 /** Making a pizza, step by step. */
 public class AddPizzaScreen {
     private static final int MAX_TOPPINGS = 7;
+    private static final int MAX_SAUCES = 2;
 
     private final Scanner scanner;
 
@@ -184,10 +185,15 @@ public class AddPizzaScreen {
 
     private void addSauces(Pizza pizza) {
         if (pizza.getToppings().size() >= MAX_TOPPINGS) return;
-        System.out.println("\n----- Sauces (free) -----");
+        System.out.println("\n----- Sauces (free, max " + MAX_SAUCES + ") -----");
         SauceType[] sauces = SauceType.values();
         String[] options = getEnumLabels(sauces);
         while (pizza.getToppings().size() < MAX_TOPPINGS) {
+            // Stop at max sauces
+            if (countSauces(pizza) >= MAX_SAUCES) {
+                System.out.println("\nMax " + MAX_SAUCES + " sauces reached.");
+                break;
+            }
             int index = promptChoice("Select sauce:", options, "Done with sauces");
             if (index == -1) break;
             SauceType selected = sauces[index];
@@ -250,6 +256,14 @@ public class AddPizzaScreen {
             if (t instanceof PizzaSideTopping && ((PizzaSideTopping) t).getSide() == side) return true;
         }
         return false;
+    }
+
+    private int countSauces(Pizza pizza) {
+        int count = 0;
+        for (Topping t : pizza.getToppings()) {
+            if (t instanceof Sauce) count++;
+        }
+        return count;
     }
 
     // ===== Helpers =====
