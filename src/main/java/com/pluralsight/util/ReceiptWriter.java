@@ -10,9 +10,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class ReceiptWriter {
     // STATIC CONSTANTS
@@ -42,6 +39,8 @@ public class ReceiptWriter {
             bw.newLine();
             bw.write("=".repeat(LINE_LENGTH));
             bw.newLine();
+            bw.write(center("Order ID: " + order.getOrderId(), LINE_LENGTH));
+            bw.newLine();
             bw.newLine();
 
             // BODY
@@ -53,7 +52,9 @@ public class ReceiptWriter {
             // FOOTER
             bw.write("-".repeat(LINE_LENGTH));
             bw.newLine();
-            writeTotalLine(bw, order.getTotal());
+            writeFooterLine(bw, "Subtotal",     order.getSubtotal());
+            writeFooterLine(bw, "Tax (10.25%)", order.getTax());
+            writeFooterLine(bw, "TOTAL",        order.getGrandTotal());
 
         } catch (IOException e) {
             System.out.println("Error writing receipt: " + e.getMessage());
@@ -63,56 +64,29 @@ public class ReceiptWriter {
     /** Writes one item with price on the first line. */
     private void writeItem(BufferedWriter bw, OrderItem item) throws IOException {
         String priceString = String.format("$%.2f", item.getPrice());
-        int maxLineLength = LINE_LENGTH - priceString.length() - 1;
-
-        List<String> lines = new ArrayList<>();
-        for (String line : item.getDescription()) {
-            lines.addAll(Arrays.asList(splitIntoLines(line, maxLineLength)));
-        }
+        String[] lines = item.getDescription();
 
         // First line + price right-aligned
-        String firstLine = lines.get(0);
+        String firstLine = lines[0];
         int spaces = LINE_LENGTH - firstLine.length() - priceString.length();
         if (spaces < 1) spaces = 1;
         bw.write(firstLine + " ".repeat(spaces) + priceString);
         bw.newLine();
 
         // Remaining lines as-is
-        for (int i = 1; i < lines.size(); i++) {
-            bw.write(lines.get(i));
+        for (int i = 1; i < lines.length; i++) {
+            bw.write(lines[i]);
             bw.newLine();
         }
     }
 
-    /** Writes the TOTAL line. */
-    private void writeTotalLine(BufferedWriter bw, BigDecimal total) throws IOException {
-        String priceString = String.format("$%.2f", total);
-        int spaces = LINE_LENGTH - "TOTAL".length() - priceString.length();
-        bw.write("TOTAL" + " ".repeat(spaces) + priceString);
+    /** Writes a footer line (label + right-aligned amount). */
+    private void writeFooterLine(BufferedWriter bw, String label, BigDecimal amount) throws IOException {
+        String priceStr = "$" + String.format("%.2f", amount);
+        int spaces = LINE_LENGTH - label.length() - priceStr.length();
+        if (spaces < 1) spaces = 1;
+        bw.write(label + " ".repeat(spaces) + priceStr);
         bw.newLine();
-    }
-
-    /** Splits long text into shorter lines without breaking words. */
-    private String[] splitIntoLines(String text, int maxLineLength) {
-        // Short text? Return as-is so leading spaces stay.
-        if (text.length() <= maxLineLength) {
-            return new String[] { text };
-        }
-
-        List<String> lines = new ArrayList<>();
-        String[] words = text.split(" ");
-        StringBuilder current = new StringBuilder();
-        for (String word : words) {
-            int spaceBefore = !current.isEmpty() ? 1 : 0;
-            if (current.length() + spaceBefore + word.length() > maxLineLength && !current.isEmpty()) {
-                lines.add(current.toString());
-                current = new StringBuilder();
-            }
-            if (!current.isEmpty()) current.append(" ");
-            current.append(word);
-        }
-        if (!current.isEmpty()) lines.add(current.toString());
-        return lines.toArray(new String[0]);
     }
 
     /** Adds left padding so the text sits centered. */

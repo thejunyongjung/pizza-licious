@@ -1,6 +1,7 @@
 package com.pluralsight;
 
 import com.pluralsight.ui.HomeScreen;
+import com.pluralsight.util.Colors;
 
 import java.util.Scanner;
 
@@ -17,9 +18,10 @@ public class Main {
 
     private static void printBanner() {
         System.out.println();
-
-        System.out.println("======================================");
-        System.out.println("      Welcome to PIZZA-licious        ");
-        System.out.println("======================================");
+        System.out.println(Colors.BRIGHT_CYAN + "╔══════════════════════════════════════════════════════════╗" + Colors.RESET);
+        System.out.println(Colors.BRIGHT_CYAN + "║" + Colors.BOLD + Colors.BRIGHT_WHITE
+                + "                 Welcome to PIZZA-licious                 "
+                + Colors.RESET + Colors.BRIGHT_CYAN + "║" + Colors.RESET);
+        System.out.println(Colors.BRIGHT_CYAN + "╚══════════════════════════════════════════════════════════╝" + Colors.RESET);
     }
 }

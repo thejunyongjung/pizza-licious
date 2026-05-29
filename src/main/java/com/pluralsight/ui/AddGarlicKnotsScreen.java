@@ -1,6 +1,7 @@
 package com.pluralsight.ui;
 
 import com.pluralsight.models.GarlicKnots;
+import com.pluralsight.util.Colors;
 
 import java.util.Scanner;
 
@@ -12,14 +13,15 @@ public class AddGarlicKnotsScreen {
 
     /** Returns the built GarlicKnots, or null if cancelled. */
     public GarlicKnots getKnots() {
-        System.out.println("\n===== Add Garlic Knots =====");
+        System.out.println(Colors.boldYellow("\n" + "=".repeat(21) + " Add Garlic Knots " + "=".repeat(21)));
         System.out.println("$1.50 each");
 
         int quantity = promptQuantity();
         if (quantity == -1) return null;
 
         GarlicKnots knots = new GarlicKnots(quantity);
-        System.out.println("\nGarlic Knots added:");
+        System.out.println(Colors.green("\nGarlic Knots added:"));
+        System.out.println(Colors.dim("-".repeat(60)));
         for (String line : knots.getDescription()) {
             System.out.println(line);
         }
@@ -31,7 +33,7 @@ public class AddGarlicKnotsScreen {
         // Loop until valid input
         while (true) {
             System.out.println();
-            System.out.println("How many garlic knots? (enter 0 to cancel)");
+            System.out.println(Colors.bold("How many garlic knots? (enter 0 to cancel)"));
             System.out.print("Quantity: ");
 
             String input = scanner.nextLine().trim();
