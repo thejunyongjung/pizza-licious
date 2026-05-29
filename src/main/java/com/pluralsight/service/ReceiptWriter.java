@@ -33,7 +33,7 @@ public class ReceiptWriter {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
 
             // HEADER
-            bw.write(center("PIZZA-licious Receipt", LINE_LENGTH));
+            bw.write(center("PIZZA-licious (Fremont, CA)", LINE_LENGTH));
             bw.newLine();
             bw.write(center(now.format(DISPLAY_FORMAT), LINE_LENGTH));
             bw.newLine();
